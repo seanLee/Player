@@ -34,7 +34,7 @@ public class AudioOutput {
     private var convertUnit: AudioUnit?
     
     init(_ channels: Int, _ sampleRate: Int) {
-        ELAudioSession.shareInstance().category = AVAudioSessionCategoryPlayback
+        ELAudioSession.shareInstance().category = convertFromAVAudioSessionCategory(AVAudioSession.Category.playback)
         ELAudioSession.shareInstance().preferredSampleRate = Float64(sampleRate)
         ELAudioSession.shareInstance().active = true
         ELAudioSession.shareInstance().preferredLatency = SMAudioIOBufferDurationSmall * 4.0
@@ -172,16 +172,16 @@ public class AudioOutput {
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.onNotificationAudioInterrupted(sender:)),
-                                               name: .AVAudioSessionInterruption,
+                                               name: AVAudioSession.interruptionNotification,
                                                object: AVAudioSession.sharedInstance())
     }
     
     private func removeAudioSessionInterruptedObserver() {
-        NotificationCenter.default.removeObserver(self, name: .AVAudioSessionInterruption, object: nil)
+        NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: nil)
     }
     
     @objc private func onNotificationAudioInterrupted(sender: Notification) {
-        if let type = sender.userInfo?[AVAudioSessionInterruptionTypeKey] as? AVAudioSessionInterruptionType {
+        if let type = sender.userInfo?[AVAudioSessionInterruptionTypeKey] as? AVAudioSession.InterruptionType {
             switch type {
             case .began:
                 stop()
@@ -251,4 +251,9 @@ public class AudioOutput {
         
         exit(1)
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromAVAudioSessionCategory(_ input: AVAudioSession.Category) -> String {
+	return input.rawValue
 }

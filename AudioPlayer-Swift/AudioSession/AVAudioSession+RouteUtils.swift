@@ -11,18 +11,18 @@ import AVFoundation
 extension AVAudioSession {
     public func usingBlueTooth() -> Bool {
         let inputs = currentRoute.inputs
-        let blueToothInputRoutes = [AVAudioSessionPortBluetoothHFP]
+        let blueToothInputRoutes = [convertFromAVAudioSessionPort(AVAudioSession.Port.bluetoothHFP)]
         
         for description in inputs {
-            if blueToothInputRoutes.contains(description.portType) {
+            if blueToothInputRoutes.contains(convertFromAVAudioSessionPort(description.portType)) {
                 return true
             }
         }
         
         let outputs = currentRoute.outputs
-        let blueToothOutputRoutes = [AVAudioSessionPortBluetoothHFP, AVAudioSessionPortBluetoothLE, AVAudioSessionPortBluetoothA2DP]
+        let blueToothOutputRoutes = [convertFromAVAudioSessionPort(AVAudioSession.Port.bluetoothHFP), convertFromAVAudioSessionPort(AVAudioSession.Port.bluetoothLE), convertFromAVAudioSessionPort(AVAudioSession.Port.bluetoothA2DP)]
         for description in outputs {
-            if blueToothOutputRoutes.contains(description.portType)  {
+            if blueToothOutputRoutes.contains(convertFromAVAudioSessionPort(description.portType))  {
                 return true
             }
         }
@@ -32,18 +32,18 @@ extension AVAudioSession {
     
     public func usingWiredMicrophone() -> Bool {
         let inputs = currentRoute.inputs
-        let headSetInputRoutes = [AVAudioSessionPortHeadsetMic]
+        let headSetInputRoutes = [convertFromAVAudioSessionPort(AVAudioSession.Port.headsetMic)]
         
         for description in inputs {
-            if headSetInputRoutes.contains(description.portType) {
+            if headSetInputRoutes.contains(convertFromAVAudioSessionPort(description.portType)) {
                 return true
             }
         }
         
         let outputs = currentRoute.outputs
-        let headSetOutputRoutes = [AVAudioSessionPortHeadphones, AVAudioSessionPortUSBAudio]
+        let headSetOutputRoutes = [convertFromAVAudioSessionPort(AVAudioSession.Port.headphones), convertFromAVAudioSessionPort(AVAudioSession.Port.usbAudio)]
         for description in outputs {
-            if headSetOutputRoutes.contains(description.portType) {
+            if headSetOutputRoutes.contains(convertFromAVAudioSessionPort(description.portType)) {
                 return true
             }
         }
@@ -53,14 +53,19 @@ extension AVAudioSession {
     
     public func shouldShowEarphoneAlert() -> Bool {
         let outputs = currentRoute.outputs
-        let headSetOutputRoutes = [AVAudioSessionPortBuiltInReceiver, AVAudioSessionPortBuiltInSpeaker]
+        let headSetOutputRoutes = [convertFromAVAudioSessionPort(AVAudioSession.Port.builtInReceiver), convertFromAVAudioSessionPort(AVAudioSession.Port.builtInSpeaker)]
         
         for description in outputs {
-            if headSetOutputRoutes.contains(description.portType) {
+            if headSetOutputRoutes.contains(convertFromAVAudioSessionPort(description.portType)) {
                 return true
             }
         }
         
         return false
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromAVAudioSessionPort(_ input: AVAudioSession.Port) -> String {
+	return input.rawValue
 }

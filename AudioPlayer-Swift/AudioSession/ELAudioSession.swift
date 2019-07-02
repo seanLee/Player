@@ -34,7 +34,7 @@ open class ELAudioSession {
             _category = newValue
             
             do {
-                try audioSession.setCategory(newValue)
+                try audioSession.setCategory(AVAudioSession.Category(rawValue: newValue))
             }
             catch {
                 print("get errors when setCategory")
@@ -83,7 +83,7 @@ open class ELAudioSession {
     }
     
     open func addRouteChangeListener() {
-        NotificationCenter.default.addObserver(self, selector: #selector(self.onNotificationAudioRouteChange(_:)), name: .AVAudioSessionRouteChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onNotificationAudioRouteChange(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
         
         adjustOnRouteChange()
     }
